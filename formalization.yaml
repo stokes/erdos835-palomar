@@ -1,0 +1,147 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+version: "v0.4"
+
+project:
+  name: "Erdős Problem 835 when k + 1 is composite: the chromatic number of J(2k, k) exceeds k + 1"
+  description: >-
+    Erdős Problem 835 asks whether, for some k > 2, the k-element subsets of a 2k-element set can be
+    coloured with k + 1 colours so that every (k + 1)-element set sees all k + 1 colours among its
+    k-element subsets; equivalently, whether the Johnson graph J(2k, k) has chromatic number k + 1 for
+    some k > 2. Jie Ma and Quanyu Tang showed that this fails whenever k + 1 is not prime. This Lean 4
+    formalization proves, with Mathlib only: the equivalence between the colouring property and
+    χ(J(2k, k)) = k + 1 for k > 0; χ(J(2k, k)) > k + 1 for every k > 2 with k + 1 composite; the
+    consequence for every odd k > 2; and χ(J(18, 9)) > 10. The proof is a double count of the k-subsets
+    of one colour inside a (k + j)-set, which forces k + 1 to divide (k + j).choose j for 1 ≤ j ≤ k;
+    a prime p < k + 1 dividing k + 1 violates this at j = p. The case where k + 1 is prime, and so the
+    problem itself, remains open; no new mathematics is claimed.
+  authors:
+    - "Matt Stokes"
+  responsible_maintainers:
+    - "Matt Stokes"
+  license: "Apache-2.0"
+
+sources:
+  - title: "A note on Erdős Problem #835"
+    authors: ["Jie Ma", "Quanyu Tang"]
+    id: "https://github.com/QuanyuTang/erdos-problem-835/blob/main/On_Problem_835.pdf"
+    type: "paper"
+    location: "Proposition 2.1 (the divisibility condition) and its consequence for k + 1 not prime"
+    relationship: "formalizes"
+    note: >-
+      The formalized theorem is theirs. Their Proposition 2.1 (t divides (k + t).choose (t - 1) for
+      1 ≤ t ≤ k when χ(J(2k, k)) = k + 1) is equivalent to (k + 1) dividing (k + t).choose t, the
+      condition used here, but the Lean proof reaches it by double counting colour classes rather than
+      by their comparison of a maximal independent set with packings of complete hypergraphs.
+    author_endorsement: "not-contacted"
+  - title: "Erdős Problem #835"
+    contributors:
+      - name: "Paul Erdős"
+        role: "problem-proposer"
+    id: "https://www.erdosproblems.com/835"
+    type: "web discussion"
+    relationship: "background"
+    note: "The problem statement and its status; the equivalence with the chromatic number of J(2k, k)."
+    author_endorsement: "n/a"
+
+related_formalizations:
+  - id: "https://github.com/google-deepmind/formal-conjectures/blob/5a2fb85045c86e4a184b15ce7531ba199a3c4580/FormalConjectures/ErdosProblems/835.lean"
+    relationship: "builds-on"
+    note: >-
+      The Challenge definitions and statements are copied verbatim from formal-conjectures (Apache-2.0),
+      changing only the namespace and writing Composite (k + 1) for (k + 1).Composite; Challenge.lean
+      has the name-by-name mapping. formal-conjectures states these results without proof.
+  - id: "https://github.com/stokes/erdos835-lean/tree/daee0bc82ad2a1c640b81bd967a77bbbe208d4a2"
+    relationship: "other"
+    note: >-
+      An earlier version of the same proof by the same author, written against formal-conjectures on
+      Lean v4.33.1. This repository ports it to a self-contained Mathlib project with a
+      Challenge/Solution split.
+
+classification:
+  arxiv: ["math.CO"]
+  msc2020: ["05C15", "05D05"]
+
+status:
+  scope: >-
+    The four statements in Challenge.lean, all proved in Solution.lean. The prime case of Erdős
+    Problem 835 is not addressed.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: ["propext", "Classical.choice", "Quot.sound"]
+  main_results:
+    - declaration: "Erdos835Palomar.johnson_chromaticNumber_composite"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+      literature_dependencies: []
+    - declaration: "Erdos835Palomar.property_iff_chromaticNumber"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+      literature_dependencies: []
+    - declaration: "Erdos835Palomar.johnson_chromaticNumber_odd"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+      literature_dependencies: []
+    - declaration: "Erdos835Palomar.johnsonGraph_18_9_chromaticNumber"
+      file: "Solution.lean"
+      sorry_count: 0
+      axioms: ["propext", "Classical.choice", "Quot.sound"]
+      comparator_config: "comparator.json"
+      literature_dependencies: []
+
+automation:
+  methods:
+    - method: "agent"
+      models: ["Claude (Anthropic)"]
+      framework: "Claude Code"
+      tool_setup: >-
+        An AI agent wrote the Lean proofs and this metadata, iterating against the Lean compiler and
+        Mathlib on the author's own machine; the author chose the problem and directed the work.
+      prompting_notes: >-
+        Task specifications named the formal-conjectures statements to prove and required exact
+        statement matching (type_of% checks), standard axioms only, and warning-free builds.
+  notes: >-
+    The proof was first developed against formal-conjectures (see related_formalizations) and then
+    ported to this self-contained project.
+
+fidelity:
+  divergences: >-
+    None in content. Relative to formal-conjectures, the namespace is Erdos835Palomar and
+    Composite (k + 1) replaces (k + 1).Composite. Relative to Ma and Tang, the vertices of J(n, k) are
+    k-element Finsets of Fin n (subtype), the chromatic number is Mathlib's SimpleGraph.chromaticNumber
+    in ℕ∞, and the colouring property is stated for Fin (2 * k).
+
+review:
+  status: "unchecked"
+  reviewers: []
+  notes: >-
+    No human mathematical review beyond the author's direction of the work. The proofs are checked by
+    the Lean kernel; the statements are copies of the formal-conjectures statements.
+
+alignment:
+  namespace: "Erdos835Palomar"
+  statements:
+    - source: "Ma–Tang: χ(J(2k, k)) > k + 1 when k > 2 and k + 1 is not prime"
+      lean: "Erdos835Palomar.johnson_chromaticNumber_composite"
+      module: "Challenge"
+      status: "proved"
+    - source: "erdosproblems.com/835: the colouring property is equivalent to χ(J(2k, k)) = k + 1"
+      lean: "Erdos835Palomar.property_iff_chromaticNumber"
+      module: "Challenge"
+      status: "proved"
+    - source: "The odd case (k + 1 even, hence composite)"
+      lean: "Erdos835Palomar.johnson_chromaticNumber_odd"
+      module: "Challenge"
+      status: "proved"
+    - source: "The case k = 9: χ(J(18, 9)) > 10"
+      lean: "Erdos835Palomar.johnsonGraph_18_9_chromaticNumber"
+      module: "Challenge"
+      status: "proved"
+
+acknowledgements: >-
+  Definitions and statements from google-deepmind/formal-conjectures (Apache-2.0); Mathlib.
